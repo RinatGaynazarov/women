@@ -1,6 +1,9 @@
+from gc import get_objects
+
 from django.http import HttpResponse, HttpResponseNotFound
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.context_processors import request
+from django.template.defaultfilters import title
 from django.template.loader import render_to_string
 
 from muslim.models import Women
@@ -32,25 +35,30 @@ cats_db = [
 
 
 def index(request):
-
+    posts = Women.objects.filter(is_published=1)
     data = {
         'title': 'Главная Страница',
         'menu' : menu,
-        'posts': data_db,
+        'posts': posts,
         'cat_selected': None,
     }
 
     return render(request,'muslim/index.html',context=data )
 
-def post_list(request):
-    posts = Women.objects.all()
-    return render(request, 'muslim/post.html', {'posts': posts})
-
 def about(request):
     return render(request,'muslim/about.html', {'title': 'О Сайте', 'menu': menu})
 
-def show_post(request, post_id):
-    return HttpResponse(f"Отображения статьи с id = {post_id}")
+def show_post(request, post_slug):
+    post = get_object_or_404(Women, slug = post_slug)
+
+    data = {
+        'title': post.title,
+        'menu': menu,
+        'post': post,
+        'cat_selected': 1,
+    }
+
+    return render(request,'muslim/post.html', data)
 
 def addpage (request):
     return HttpResponse("Добавления статьи")

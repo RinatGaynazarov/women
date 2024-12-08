@@ -1,18 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список постов</title>
-</head>
-<body>
-    <h1>Список постов</h1>
-    <ul>
-        {% for post in posts %}
-            <li>{{ post.title }}</li>
-        {% empty %}
-            <li>Нет доступных постов.</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ post.title }}</h1>
+
+{% if post.photo %}
+<p><img class = 'img-article-left' src="{{ post.photo.url  }}"></p>
+{% endif %}
+{{post.content|linebreaks}}
+{% endblock %}
